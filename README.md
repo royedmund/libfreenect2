@@ -2,7 +2,7 @@
 
 > **Independent fork of [OpenKinect/libfreenect2](https://github.com/OpenKinect/libfreenect2).**
 > This repository preserves the original project, its contributors, and licenses.
-> The additional source edits in the supplied fork are **two OpenCL local-constant renames**; the Debian 13/Teams instructions are supplemental documentation, not an official Microsoft or OpenKinect integration.
+> The original core-library edits are **two OpenCL local-constant renames**. This fork also includes a separate RGB24 V4L2 bridge, an installer and a systemd user service. These additions are maintained independently of Microsoft and OpenKinect.
 
 ## Additional documentation for this fork
 
@@ -12,14 +12,29 @@
 - **[Working X570 RGB24 Kinect V4L2 bridge](docs/V4L2_KINECT_BRIDGE.md)** — direct Kinect RGB24 → /dev/video10 → Teams-for-Linux (X570 hardware-tested; fresh install still pending).
 - **[Independent X570 test record](docs/TESTED_X570_2026-10-07.md)** — actual output, warnings and acceptance checklist.
 - **[Debian 13 webcam installer](scripts/install-kinect-v2-webcam.sh)** — reproducible clean-install attempt, including a portable systemd user service.
-- **[Publish or update this fork](docs/PUBLISH_FORK.md)** — preserve upstream Git history.
+- **[Maintain and update this fork](docs/PUBLISH_FORK.md)** — review, validate and publish changes while preserving upstream history.
 - **[Read-only system diagnostics](scripts/check-kinect-debian13.sh)** — check USB/V4L2/OBS dependencies.
 
 **Limitations:** Core libfreenect2 does not expose a native `/dev/video*` webcam. This fork includes a separate **hardware-tested RGB24 userspace V4L2 bridge**: its original deployment was observed running in Teams-for-Linux on Debian 13.7/X570, without OBS. The **new clean-install automation has not yet been independently tested**, and the OBS fallback is still documented. The original upstream installation and API documentation follow below.
 
+## Repository layout
+
+| Location | Purpose |
+| --- | --- |
+| `src/`, `include/`, `examples/` | Original library implementation, API and examples |
+| `CMakeLists.txt`, `cmake_modules/`, `depends/`, `platform/` | Core build support and platform integration |
+| [doc/](doc/) | Upstream API documentation sources |
+| [docs/](docs/) | This fork's Debian, webcam and validation guides |
+| [tools/kinect-v4l2-bridge/](tools/kinect-v4l2-bridge/) | Optional standalone RGB24 webcam bridge |
+| [scripts/](scripts/) | Diagnostics and experimental clean-install automation |
+| [systemd/user/](systemd/user/) | Portable user service template |
+| `APACHE20`, `GPL2`, `CONTRIB` | Original licensing and contributor records |
+
+The upstream layout is retained. The optional webcam bridge has its own CMake project and is not automatically built by the root library build. `doc/` and `docs/` serve different purposes; keep both directories. Build output and installed binaries should remain outside tracked source files.
+
 ---
 
-# libfreenect2
+## Upstream libfreenect2 guide
 
 ## Table of Contents
 
@@ -218,6 +233,8 @@ Use your favorite package managers (brew, ports, etc.) to install most if not al
 * Test OpenNI2. `make install-openni2` (may need sudo), then run `NiViewer`. Environment variable `LIBFREENECT2_PIPELINE` can be set to `cl`, `cuda`, etc to specify the pipeline.
 
 ### Linux
+
+For Debian 13 in this fork, use [DEBIAN13_SETUP.md](docs/DEBIAN13_SETUP.md) and the separate [webcam bridge guide](docs/V4L2_KINECT_BRIDGE.md). The instructions below are retained upstream guidance, including historical distribution-specific steps.
 
 Note: Ubuntu 12.04 is too old to support. Debian jessie may also be too old, and Debian stretch is implied in the following.
 

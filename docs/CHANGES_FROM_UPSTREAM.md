@@ -8,7 +8,7 @@
 - **Target platform for these additional notes:** Debian 13 (Trixie), x86_64, Kinect for Windows v2.
 - **Upstream ownership, history and license:** retained. This is an independent community fork, not an official OpenKinect release.
 
-## Source-code differences present in the uploaded project
+## Original ZIP: core-library differences
 
 Exactly two C++ files contain substantive changes relative to the archived upstream commit:
 
@@ -21,16 +21,16 @@ In both files, the value remains **2**. No depth algorithm, frame format, USB tr
 
 The ZIP also contained nonfunctional packaging differences (four dependency shell scripts had lost their executable bits), two `.bak` copies of the pre-change C++ files, a `.git/` directory and `build/` artefacts. **Those are deliberately excluded from the publishable changes**; the upstream executable modes are retained.
 
-## Documentation supplied by this fork
+## Initial documentation supplied with the fork
 
 - `docs/DEBIAN13_SETUP.md` — Debian 13 dependencies, USB permissions, build and functional tests.
 - `docs/TEAMS_FOR_LINUX.md` — use Kinect v2 as a video source in Teams-for-Linux by way of OBS Studio's virtual camera.
 - `docs/PUBLISH_FORK.md` — preserving upstream history and publishing the small patch to a genuine GitHub fork.
 - `scripts/check-kinect-debian13.sh` — read-only preflight diagnostics (does not install drivers or alter system configuration).
 
-**Important distinction:** The accompanying Teams-for-Linux documentation describes a separate *application workflow*, not a new camera bridge implemented in libfreenect2. The uploaded ZIP contains no native V4L2 Kinect webcam bridge, OBS plug-in or Teams integration source code. Do not advertise direct `/dev/video10` output from libfreenect2 alone.
+**Historical scope:** The original ZIP contained no V4L2 bridge. The initial Teams guide used OBS. The current repository subsequently added the separate RGB24 bridge documented below; core libfreenect2 alone still does not create a webcam device.
 
-## Validation and limitations
+## Initial ZIP validation and limitations
 
 - Inspection of the supplied ZIP confirms the two OpenCL identifier renames.
 - The ZIP includes locally generated CMake/build artefacts and a `Protonect` binary, but those are **not reproducible test evidence** for arbitrary systems and are excluded from the fork publication.
@@ -42,15 +42,15 @@ The ZIP also contained nonfunctional packaging differences (four dependency shel
 Preserve the upstream source files and their headers, `APACHE20`, `GPL2`, and `CONTRIB` when publishing or redistributing the project. Follow the per-file licensing information in the original source. The fork's documentation does not replace upstream licensing terms.
 
 
-## Subsequent V4L2 bridge addition
+## Superseded experimental YUYV bridge
 
-The source-code comparison above describes the original uploaded ZIP. Later, this fork added experimental files:
+The source-code comparison above describes the original uploaded ZIP. An intermediate update added the following experimental files (the implementation was later replaced by RGB24):
 
 - `tools/kinect-v4l2-bridge/kinect-v4l2-bridge.cpp`: colour-only userspace bridge that converts libfreenect2 colour frames to YUYV422 and feeds a v4l2loopback device.
 - `tools/kinect-v4l2-bridge/CMakeLists.txt`: standalone optional example build.
 - `docs/V4L2_KINECT_BRIDGE.md`: Debian 13 / Teams-for-Linux setup and limitations.
 
-No upstream libfreenect2 processing routines are changed by this later addition. This is not a native kernel webcam driver. It has had a compile-time syntax check, but requires physical device tests before being considered proven.
+No upstream libfreenect2 processing routines are changed by this later addition. This is not a native kernel webcam driver. That intermediate YUYV implementation had only a compile-time syntax check. It is no longer the implementation supplied by this checkout; see the current RGB24 update below.
 
 
 ## Hardware-tested RGB24 webcam update (7 October 2026)

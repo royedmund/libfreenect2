@@ -8,22 +8,7 @@ This guide explains how to make a **Microsoft Kinect for Windows v2 / Xbox One K
 
 ## 1. Architecture
 
-```text
-Kinect v2 + powered adapter + USB 3.0 (5 Gbit/s)
-                  |
-                  v
-          libfreenect2 colour stream
-          (no Kinect depth/IR processing)
-                  |
-                  v
-     kinect-v2-bridge (RGB24, 1280×720)
-                  |
-                  v
-          v4l2loopback /dev/video10
-                  |
-                  v
-        Teams-for-Linux / other V4L2 clients
-```
+A powered Kinect v2 sends its colour stream over USB 3 to libfreenect2. The separate `kinect-v2-bridge` converts those frames to RGB24 and writes to `v4l2loopback` at `/dev/video10`, which Teams-for-Linux and other V4L2 clients can open.
 
 The bridge provides **video only**. It does not supply microphone audio, skeleton tracking, depth or infrared streams to Teams. Webcam frame output is set to 1280×720 by default; setting `KINECT_RESOLUTION=1080p` selects 1920×1080. The original source's packed-colour conversion is retained unchanged because this is the version tested on X570. Test red/blue objects on any new platform before asserting channel correctness.
 
