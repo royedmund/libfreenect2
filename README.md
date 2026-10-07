@@ -9,10 +9,11 @@
 - **[Exactly what changed from upstream](docs/CHANGES_FROM_UPSTREAM.md)** — source-code diff and provenance.
 - **[Build and run on Debian 13](docs/DEBIAN13_SETUP.md)** — dependencies, USB rules, and Protonect tests.
 - **[Use Kinect v2 in Teams-for-Linux](docs/TEAMS_FOR_LINUX.md)** — Protonect preview → OBS Studio → OBS Virtual Camera → Teams.
+- **[Experimental direct V4L2 bridge](docs/V4L2_KINECT_BRIDGE.md)** — libfreenect2 RGB → /dev/video10 → Teams, with no OBS (testing required).
 - **[Publish or update this fork](docs/PUBLISH_FORK.md)** — preserve upstream Git history.
 - **[Read-only system diagnostics](scripts/check-kinect-debian13.sh)** — check USB/V4L2/OBS dependencies.
 
-**Limitations:** `libfreenect2` by itself does **not** expose a native `/dev/video*` webcam on Debian. The Teams workflow documented here requires OBS Virtual Camera. The original upstream installation and API documentation follow below.
+**Limitations:** Core libfreenect2 does not expose a native `/dev/video*` webcam. This fork now also includes an **experimental, standalone userspace V4L2 loopback example**. The established OBS procedure remains available. The bridge has not been validated on physical hardware in the publishing environment. The original upstream installation and API documentation follow below.
 
 ---
 

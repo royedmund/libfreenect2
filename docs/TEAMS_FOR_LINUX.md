@@ -99,3 +99,8 @@ Sign in with the Teams account you normally use. You will need an internet conne
 ### Optional direction for future development
 
 A real headless Kinect-to-V4L2 bridge could create a persistent V4L2 node and feed RGB frames directly from libfreenect2, removing the visible preview/OBS dependency. **That bridge is not included in the supplied ZIP or this fork's source changes.** It should be a separate future feature with working code and tests before documenting it as available.
+
+
+## Experimental OBS-free alternative
+
+This fork also contains an optional [direct colour-camera to V4L2 bridge](V4L2_KINECT_BRIDGE.md). It uses libfreenect2 + v4l2loopback and does not require a Protonect preview or OBS Studio. It is **experimental and needs testing on real hardware**; the OBS instructions above are the established fallback.

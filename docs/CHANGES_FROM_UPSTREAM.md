@@ -40,3 +40,14 @@ The ZIP also contained nonfunctional packaging differences (four dependency shel
 ## Licenses and attribution
 
 Preserve the upstream source files and their headers, `APACHE20`, `GPL2`, and `CONTRIB` when publishing or redistributing the project. Follow the per-file licensing information in the original source. The fork's documentation does not replace upstream licensing terms.
+
+
+## Subsequent V4L2 bridge addition
+
+The source-code comparison above describes the original uploaded ZIP. Later, this fork added experimental files:
+
+- `tools/kinect-v4l2-bridge/kinect-v4l2-bridge.cpp`: colour-only userspace bridge that converts libfreenect2 colour frames to YUYV422 and feeds a v4l2loopback device.
+- `tools/kinect-v4l2-bridge/CMakeLists.txt`: standalone optional example build.
+- `docs/V4L2_KINECT_BRIDGE.md`: Debian 13 / Teams-for-Linux setup and limitations.
+
+No upstream libfreenect2 processing routines are changed by this later addition. This is not a native kernel webcam driver. It has had a compile-time syntax check, but requires physical device tests before being considered proven.
