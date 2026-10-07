@@ -1,74 +1,76 @@
-# Publish a genuine libfreenect2 fork on GitHub
+# Maintain and update this libfreenect2 fork
 
-The supplied ZIP includes the *original* OpenKinect Git history (`.git/`) based on commit `fd64c5d9b214df6f6a55b4419357e51083f15d93`, but it is **not yet a GitHub fork**. A proper GitHub fork preserves the upstream relationship and contributors' history.
+The fork is already published at [royedmund/libfreenect2](https://github.com/royedmund/libfreenect2), with [OpenKinect/libfreenect2](https://github.com/OpenKinect/libfreenect2) as its upstream. Use this guide for later updates. The initial ZIP-to-fork publication procedure is no longer a prerequisite.
 
-## 1. Create a fork through GitHub
-
-1. Sign in to GitHub as **`royedmund`**.
-2. Open https://github.com/OpenKinect/libfreenect2 .
-3. Click **Fork** → choose **`royedmund`** as owner.
-4. Use repository name `libfreenect2` (or choose another name and update the commands below).
-5. Choose a **full fork** if offered an option to copy only the default branch; this keeps tags/branches where available.
-6. Ensure your new fork is accessible at `https://github.com/royedmund/libfreenect2`.
-
-The packaged files cannot themselves create a fork on GitHub. The account owner needs to complete that UI step; the prepared patch supplies the source changes and documentation.
-
-## 2. Obtain the patch produced from the supplied project
-
-Download **`libfreenect2-fork-update.patch`** from the deliverables. Place it in `~/Downloads` on your Debian computer.
-
-## 3. Clone *your fork*, check compatibility and apply the patch
+## 1. Obtain a clean checkout
 
 ```bash
-cd ~
-git clone https://github.com/royedmund/libfreenect2.git
-cd libfreenect2
+git clone https://github.com/royedmund/libfreenect2.git ~/libfreenect2-review
+cd ~/libfreenect2-review
+git switch -c docs/your-update
+```
 
-git status --short
-git log -1 --oneline
+If that destination already exists, use your existing checkout or choose another directory. In an existing checkout, inspect `git status` before pulling or switching branches so local work is not lost.
 
-git apply --check ~/Downloads/libfreenect2-fork-update.patch
-git apply ~/Downloads/libfreenect2-fork-update.patch
+## 2. Understand the scope
 
-git diff --stat
+Read [CHANGES_FROM_UPSTREAM.md](CHANGES_FROM_UPSTREAM.md). The fork retains upstream source and history, adds two original OpenCL identifier renames, and later adds a separate optional RGB24 V4L2 bridge with installer/service files. These are distinct changes.
+
+| Change | Relevant locations |
+| --- | --- |
+| Core compatibility edits | The two OpenCL depth processor files listed in the change record |
+| Direct webcam integration | `tools/kinect-v4l2-bridge/`, `scripts/install-kinect-v2-webcam.sh`, `systemd/user/` |
+| Setup and observed results | `docs/`, plus the fork introduction in `README.md` |
+
+Preserve `APACHE20`, `GPL2`, `CONTRIB` and original per-file notices. Do not commit build directories, local backups or installed binaries.
+
+## 3. Validate the actual change
+
+For documentation-only edits:
+
+```bash
 git diff --check
+git diff --stat
+git diff
 ```
 
-If the `git apply --check` step fails, **stop there**. Your fork may have a different upstream revision, so inspect and reconcile rather than blindly overwriting source files. The patch was generated against the revision supplied in the ZIP.
-
-## 4. Review before publication
-
-Review the actual patch:
+Verify relative links, filenames, service names and commands against the checkout. For script edits, also run:
 
 ```bash
-git diff -- src/opencl_depth_packet_processor.cpp src/opencl_kde_depth_packet_processor.cpp
-git status --short
+bash -n scripts/check-kinect-debian13.sh
+bash -n scripts/install-kinect-v2-webcam.sh
 ```
 
-The patch should contain **two small OpenCL edits, documentation and a read-only diagnostic script**, not generated build files, backups or a `.git/` copy. Upstream `APACHE20`, `GPL2`, `CONTRIB`, source headers and commit history remain intact.
+For library/bridge changes, follow [DEBIAN13_SETUP.md](DEBIAN13_SETUP.md) and [V4L2_KINECT_BRIDGE.md](V4L2_KINECT_BRIDGE.md). A successful syntax/build check is not a hardware test. Record new device-test results in a dated document, using [the X570 record](TESTED_X570_2026-10-07.md) as a reference. Keep the clean-install status explicit until that workflow has been reproduced on a clean machine.
 
-## 5. Commit and push
+## 4. Commit and publish for review
+
+Stage only the files you intended to change. For example, for a README edit:
 
 ```bash
-git add README.md docs/ scripts/check-kinect-debian13.sh \
-        src/opencl_depth_packet_processor.cpp \
-        src/opencl_kde_depth_packet_processor.cpp
-
-git commit -m 'Document Debian 13 and Teams workflow; clarify OpenCL ICD version identifier'
-git push origin master
+git add README.md
+git diff --cached --check
+git diff --cached
+git commit -m 'Clarify fork setup and documentation navigation'
+git push -u origin HEAD
 ```
 
-GitHub does **not** accept account passwords for Git operations over HTTPS. Use Git Credential Manager, `gh auth login`, or an appropriate credential/token method; never paste authentication secrets into project files.
+Open a pull request into this fork's `master` branch. Describe the change, checks performed and any hardware tests still outstanding. Use Git Credential Manager, an SSH key or another supported credential method; do not put credentials into scripts or documentation.
 
-## 6. Validate the result on GitHub
+## 5. Review upstream updates separately
 
-Check that the fork's **README** links to the new documentation, that `docs/CHANGES_FROM_UPSTREAM.md` accurately explains the two actual source edits, and that `build/`, `*.bak`, and `.git/` were not committed. Build the fork on a clean Debian installation before publishing a release that claims tested binaries.
-
-To follow ongoing upstream changes later, add the upstream remote and *review* changes before merging:
+If the upstream remote is not already configured:
 
 ```bash
 git remote add upstream https://github.com/OpenKinect/libfreenect2.git
-git fetch upstream
 ```
 
-Do not automatically merge upstream without reviewing any new changes against your OpenCL compatibility tweak.
+Then inspect updates before deciding to merge them:
+
+```bash
+git fetch upstream
+git log --oneline HEAD..upstream/master
+git diff HEAD...upstream/master
+```
+
+Review compatibility with the fork's OpenCL changes and optional bridge. Retest before publishing any new hardware-support or performance claims.

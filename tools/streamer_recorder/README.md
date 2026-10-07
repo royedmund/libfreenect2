@@ -6,7 +6,7 @@
 * [Maintainers](README.md#maintainers)
 * [Installation](README.md#installation)
   * [Windows / Visual Studio](README.md#windows--visual-studio)
-  * [MacOS X](README.md#mac-osx)
+  * [MacOS X](README.md#mac-os-x)
   * [Linux](README.md#linux)
 
 
