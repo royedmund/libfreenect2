@@ -1,3 +1,21 @@
+# libfreenect2 — Debian 13 community fork notes
+
+> **Independent fork of [OpenKinect/libfreenect2](https://github.com/OpenKinect/libfreenect2).**
+> This repository preserves the original project, its contributors, and licenses.
+> The additional source edits in the supplied fork are **two OpenCL local-constant renames**; the Debian 13/Teams instructions are supplemental documentation, not an official Microsoft or OpenKinect integration.
+
+## Additional documentation for this fork
+
+- **[Exactly what changed from upstream](docs/CHANGES_FROM_UPSTREAM.md)** — source-code diff and provenance.
+- **[Build and run on Debian 13](docs/DEBIAN13_SETUP.md)** — dependencies, USB rules, and Protonect tests.
+- **[Use Kinect v2 in Teams-for-Linux](docs/TEAMS_FOR_LINUX.md)** — Protonect preview → OBS Studio → OBS Virtual Camera → Teams.
+- **[Publish or update this fork](docs/PUBLISH_FORK.md)** — preserve upstream Git history.
+- **[Read-only system diagnostics](scripts/check-kinect-debian13.sh)** — check USB/V4L2/OBS dependencies.
+
+**Limitations:** `libfreenect2` by itself does **not** expose a native `/dev/video*` webcam on Debian. The Teams workflow documented here requires OBS Virtual Camera. The original upstream installation and API documentation follow below.
+
+---
+
 # libfreenect2
 
 ## Table of Contents
