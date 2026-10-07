@@ -1,0 +1,15 @@
+[Unit]
+Description=Microsoft Kinect v2 RGB24 virtual webcam (libfreenect2 + V4L2)
+Documentation=https://github.com/royedmund/libfreenect2/blob/master/docs/V4L2_KINECT_BRIDGE.md
+ConditionPathExists=/dev/video10
+
+[Service]
+Type=simple
+Environment=KINECT_RESOLUTION=720p
+Environment=LIBFREENECT2_PIPELINE=cpu
+ExecStart=%h/.local/bin/kinect-v2-bridge /dev/video10
+Restart=on-failure
+RestartSec=15
+
+[Install]
+WantedBy=default.target

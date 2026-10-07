@@ -4,7 +4,7 @@
 
 `Kinect v2 → libfreenect2/Protonect preview → OBS Studio → OBS Virtual Camera (/dev/video*) → Teams-for-Linux`
 
-The uploaded fork code contains no native Kinect-to-V4L2 bridge. OBS captures the running preview window; it does **not** consume RGB frames directly from libfreenect2. This solution is useful for experimentation but is less seamless than a real webcam driver.
+The original uploaded ZIP contained no direct webcam bridge; the current fork also includes a separately documented, X570-tested RGB24 bridge. OBS captures the running preview window; it does **not** consume RGB frames directly from libfreenect2. This remains a fallback for systems on which the direct RGB24 bridge cannot be used.
 
 Teams-for-Linux is a community-maintained wrapper around the Teams web application, **not an official Microsoft Linux client**. Some capabilities depend on Microsoft's current web application and the Electron version. See [Teams-for-Linux](https://github.com/IsmaelMartinez/teams-for-linux).
 
@@ -96,11 +96,6 @@ Sign in with the Teams account you normally use. You will need an internet conne
 | Teams shows a depth map or a window border | Change/crop the OBS scene or modify the preview layout; this is window capture, not direct RGB capture. |
 | No microphone audio | Choose a separate microphone through Teams/PipeWire; the virtual video camera does not supply audio. |
 
-### Optional direction for future development
+### Preferred direct webcam path (hardware-tested on X570)
 
-A real headless Kinect-to-V4L2 bridge could create a persistent V4L2 node and feed RGB frames directly from libfreenect2, removing the visible preview/OBS dependency. **That bridge is not included in the supplied ZIP or this fork's source changes.** It should be a separate future feature with working code and tests before documenting it as available.
-
-
-## Experimental OBS-free alternative
-
-This fork also contains an optional [direct colour-camera to V4L2 bridge](V4L2_KINECT_BRIDGE.md). It uses libfreenect2 + v4l2loopback and does not require a Protonect preview or OBS Studio. It is **experimental and needs testing on real hardware**; the OBS instructions above are the established fallback.
+The optional [RGB24 Kinect-to-V4L2 bridge](V4L2_KINECT_BRIDGE.md) has now been shown working with a live Teams-for-Linux camera preview on Debian 13.7/X570: `Kinect → libfreenect2 colour → kinect-v2-bridge → /dev/video10 → Teams`. No Protonect preview or OBS is needed in that configuration. See the [X570 test record](TESTED_X570_2026-10-07.md). The clean-install automation is not yet verified on a second machine, so the OBS instructions above remain a fallback.

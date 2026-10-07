@@ -51,3 +51,21 @@ The source-code comparison above describes the original uploaded ZIP. Later, thi
 - `docs/V4L2_KINECT_BRIDGE.md`: Debian 13 / Teams-for-Linux setup and limitations.
 
 No upstream libfreenect2 processing routines are changed by this later addition. This is not a native kernel webcam driver. It has had a compile-time syntax check, but requires physical device tests before being considered proven.
+
+
+## Hardware-tested RGB24 webcam update (7 October 2026)
+
+**Important distinction:** the source-code diff described above refers to the original uploaded
+fork; subsequent features were added separately. The initially published standalone Kinect
+V4L2 example used YUYV422 and was **experimental**. On 7 October 2026, the maintainer provided
+the existing **RGB24** source from an actually running Debian 13.7/X570 system whose
+`/dev/video10` was successfully used in Teams-for-Linux. We replaced the YUYV example
+with that observed RGB24 source and recorded the results in
+[`docs/TESTED_X570_2026-10-07.md`](TESTED_X570_2026-10-07.md).
+
+Added/updated files: `tools/kinect-v4l2-bridge/kinect-v4l2-bridge.cpp`, its standalone
+CMake file, `scripts/install-kinect-v2-webcam.sh`, `systemd/user/kinect-v2-webcam.service`,
+and `docs/V4L2_KINECT_BRIDGE.md`. These additions are **not** from upstream OpenKinect.
+The original runtime linked directly to the X570's build tree; the new installer uses a
+per-user `~/.local` library instead. That installer and packaging flow are **not yet
+validated on a clean second machine**.
